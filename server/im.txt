@@ -1,0 +1,73 @@
+1---------npm i express cors dotenv
+2---------for nodemon add;
+ "scripts": {
+    "serve": "nodemon server.js"
+  },
+
+3-------const express = require("express");
+const app = express()
+
+const port = 8000;
+
+app.listen(port, ()=> {
+    console.log(`server started on port${port}`)
+})
+
+
+4-----now goto front end;
+5-----goto router.js;
+const express = require("express");
+const router = new express.Router();
+
+router.post("/register", (req, res)=> {
+    console.log(req.body)
+})
+
+module.exports = router;
+
+
+6------now check console of server, and check the data is coming from frontend?
+7------install nodemailer;
+8------router.js;
+const express = require("express");
+const router = new express.Router();
+const nodemailer = require("nodemailer")
+
+router.post("/register", (req, res)=> {
+    // console.log(req.body)
+    const {email} = req.body;
+
+    try{
+      const transporter = nodemailer.createTransport({
+        service:"gmail",
+        auth:{
+            user: process.env.EMAIL,
+            pass: process.env.PASS
+        }
+      })
+
+      const mailOptions = {
+        from : process.env.EMAIL,
+        to : email,
+        subject: "latest news of tech",
+        html: '<h1>Congratulations you have successfully send Email</h1><p>my name is muhammad bilal and i am not a terrorist</p>'
+      }
+
+      transporter.sendMail(mailOptions,(error, info) => {
+        if(error){
+            console.log("error", error)
+        }else {
+            console.log("email sent" + info.response);
+            res.status(201).json({status:201, info})
+        }
+      })
+    }catch(err){
+        res.status(401).json({status:401, err})
+    }
+
+})
+
+module.exports = router;
+
+
+Now when user come you and give email the user get an email;
